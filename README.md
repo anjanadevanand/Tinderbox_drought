@@ -7,3 +7,6 @@ Please add the a line in this readme file about the code you commit along the li
 In the impact based drought indicator folder, the following file was added:
 1. ML_Database_All_AWRA_MOf_and_3MPrecip - used to train machine learning model
 
+2. drought_metrics/sp*_calc_gridded* - used to calculate SPI-3 and SPEI-3
+
+3. drought_metrics/plot_drought_focusReg_meanSPI.ipynb - used to create spatial plot of mean SPI-3
