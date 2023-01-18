@@ -9,4 +9,4 @@ In the impact based drought indicator folder, the following file was added:
 
 2. drought_metrics/sp*_calc_gridded* - used to calculate SPI-3 and SPEI-3
 
-3. drought_metrics/plot_drought_focusReg_meanSPI.ipynb - used to create spatial plot of mean SPI-3
+3. drought_metrics/plot_drought_focusReg_meanSPI.ipynb & drought_metrics/plot_drought_focusReg_meanSPEI.ipynb - used to create spatial plot of mean SPI-3 and SPEI-3
