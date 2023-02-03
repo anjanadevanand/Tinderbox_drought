@@ -51,22 +51,33 @@ clim <- merge(clim,ref,by=c("x","y","month"))
 clim[,`:=`(vpd_anom = vpd-vpd_u)]
 
 
+vpd_ma <- ref[,.(vpd_ma = mean(vpd_u))]
+
 
 # Plot =====================================================
 clim[,.(val = median(vpd,na.rm=T), 
-        val_lo = quantile(vpd,0.05,na.rm=T),
-        val_hi = quantile(vpd,0.95,na.rm=T)),by=date] %>% 
+          val_lo1 = quantile(vpd,0.25,na.rm=T),
+        val_hi1 = quantile(vpd,0.75,na.rm=T),
+        val_lo2 = quantile(vpd,0.05,na.rm=T),
+        val_hi2 = quantile(vpd,0.95,na.rm=T)),by=date] %>% 
   .[order(date)] %>% 
-  .[,`:=`(vpd12 = frollmean(val,12,align = 'right'), 
-          vpd12_lo = frollmean(val_lo,12,align='right'),
-          vpd12_hi = frollmean(val_hi,12,align='right'))] %>% 
+  .[,`:=`(vpd12 = frollmean(val,12,align = 'right'),
+          vpd12_lo1 = frollmean(val_lo1,12,align='right'),
+          vpd12_hi1 = frollmean(val_hi1,12,align='right'),
+          vpd12_lo2 = frollmean(val_lo2,12,align='right'),
+          vpd12_hi2 = frollmean(val_hi2,12,align='right'))] %>% 
   ggplot(data=.,aes(date,vpd12))+
   # geom_rect(aes(xmin=ymd("2017-01-01",tz = 'UTC'), 
   #               xmax=ymd("2019-12-31",tz='UTC'),
   #               ymin=0,ymax=4.15), 
   #           fill='grey90')+
-  geom_ribbon(aes(x=date,ymin=vpd12_lo,ymax=vpd12_hi), 
-              lty=0, fill="#cf0000",alpha=0.25)+
+  geom_ribbon(aes(x=date,ymin=vpd12_lo2,ymax=vpd12_hi2), 
+              lty=0, fill="#ff0000",alpha=0.15)+
+  geom_ribbon(aes(x=date,ymin=vpd12_lo1,ymax=vpd12_hi1), 
+              lty=0, fill="#ff0000",alpha=0.3)+
+  geom_hline(aes(yintercept=vpd_ma$vpd_ma),lty=2,col='grey30')+
+  geom_hline(aes(yintercept=vpd_ma$vpd_ma*0.9),lty=3,col='grey30')+
+  geom_hline(aes(yintercept=vpd_ma$vpd_ma*1.1),lty=3,col='grey30')+
   geom_line()+
   geom_line(data=. %>% 
               filter(date>=ymd("2002-01-01",tz='UTC')) %>% 
@@ -75,24 +86,77 @@ clim[,.(val = median(vpd,na.rm=T),
   geom_line(data=. %>% 
               filter(date>=ymd("2002-01-01",tz='UTC')) %>% 
               filter(date<=ymd("2010-01-01",tz='UTC')), 
-            color='#cf0000',lwd=0.75)+
+            color='#b30404',lwd=0.75)+
   geom_line(data=. %>% 
               filter(date>=ymd("2017-01-01",tz='UTC')), 
             color='#000000',lwd=1.5)+
   geom_line(data=. %>% 
               filter(date>=ymd("2017-01-01",tz='UTC')), 
-            color='#cf0000',lwd=0.75)+
+            color='#ff6f00',lwd=0.75)+
   coord_cartesian(xlim=c(ymd("1980-01-01",tz='UTC'),
                          ymd("2020-09-01",tz='UTC')), 
                   ylim=c(0.99,4.15), 
                   expand=F)+
   labs(x=NULL,y=expression(paste(VPD["12 mo."]~(kPa))))+
+    # manual legend for mean and 10% anom
+    annotate('segment', 
+    x=ymd("1981-01-01",tz="UTC"),
+    xend=ymd("1984-01-01",tz="UTC"),
+    y=4,yend=4,
+    linetype=c(2),
+    color='grey30')+
+  annotate('segment', 
+    x=ymd("1981-01-01",tz="UTC"),
+    xend=ymd("1984-01-01",tz="UTC"),
+    y=3.75,yend=3.75,
+    linetype=c(3),
+    color='grey30')+
+  annotate('text', 
+    x=ymd("1984-06-01",tz="UTC"),
+    # xend=ymd("1989-01-01",tz="UTC"),
+    y=4,yend=4,
+    hjust=0,
+    label='Mean')+
+  annotate('text', 
+    x=ymd("1984-06-01",tz="UTC"),
+    # xend=ymd("1989-01-01",tz="UTC"),
+    y=3.75,yend=3.75,
+    hjust=0,
+    label='10% Relative Anomaly')+
+  
+  # manual legend for MD and Tinderbox droughts
+  annotate('segment', 
+    x=ymd("2000-01-01",tz="UTC"),
+    xend=ymd("2005-01-01",tz="UTC"),
+    y=4,yend=4,
+    linetype=c(1),
+    lwd=1,
+    color='#b30404')+
+  annotate('segment', 
+    x=ymd("2000-01-01",tz="UTC"),
+    xend=ymd("2005-01-01",tz="UTC"),
+    y=3.75,yend=3.75,
+    linetype=c(1),
+    lwd=1,
+    color='#ff6f00')+
+  annotate('text', 
+    x=ymd("2006-01-01",tz="UTC"),
+    # xend=ymd("1989-01-01",tz="UTC"),
+    y=4,yend=4,
+    hjust=0,
+    label='Millenium Drought')+
+  annotate('text', 
+    x=ymd("2006-01-01",tz="UTC"),
+    # xend=ymd("1989-01-01",tz="UTC"),
+    y=3.75,yend=3.75,
+    hjust=0,
+    label='Tinderbox Drought')+
   theme_linedraw()+
   theme(panel.background = element_blank(), 
         panel.grid = element_blank(), 
         text = element_text(size=14))
   
-ggsave("figures/figure_timeseries_absolute-vpd12-range_1981_2020.png", 
+ggsave("figures/supplement_figure_timeseries_absolute-vpd12-range_1981_2020.png", 
        width=22,
        height=8,
        units='cm',
