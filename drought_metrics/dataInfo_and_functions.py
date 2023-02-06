@@ -378,7 +378,7 @@ def draw_pcolormesh_Npanels(ds_list, cmap='viridis', levels=None, ncols = 5, nro
                 cbar_ax = fig.add_axes([0.1, 0.15, 0.8, 0.03])
         else: #shorter colorbar
             if thicker_cbar:
-                cbar_ax = fig.add_axes([0.1, 0.15, 0.8, 0.05])
+                cbar_ax = fig.add_axes([0.3, 0.15, 0.4, 0.05])
             else:
                 cbar_ax = fig.add_axes([0.3, 0.15, 0.4, 0.03])
 
