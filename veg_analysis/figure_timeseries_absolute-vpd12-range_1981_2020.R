@@ -116,7 +116,7 @@ clim[,.(val = median(vpd,na.rm=T),
     # xend=ymd("1989-01-01",tz="UTC"),
     y=4,yend=4,
     hjust=0,
-    label='Mean')+
+    label='Mean Annual VPD')+
   annotate('text', 
     x=ymd("1984-06-01",tz="UTC"),
     # xend=ymd("1989-01-01",tz="UTC"),
@@ -144,7 +144,7 @@ clim[,.(val = median(vpd,na.rm=T),
     # xend=ymd("1989-01-01",tz="UTC"),
     y=4,yend=4,
     hjust=0,
-    label='Millenium Drought')+
+    label='Millennium Drought')+
   annotate('text', 
     x=ymd("2006-01-01",tz="UTC"),
     # xend=ymd("1989-01-01",tz="UTC"),
@@ -156,7 +156,12 @@ clim[,.(val = median(vpd,na.rm=T),
         panel.grid = element_blank(), 
         text = element_text(size=14))
   
-ggsave("figures/supplement_figure_timeseries_absolute-vpd12-range_1981_2020.png", 
+ggsave("figures/v2/supplement_figure_timeseries_absolute-vpd12-range_1981_2020.png", 
+       width=22,
+       height=8,
+       units='cm',
+       dpi=350)
+ggsave("figures/v2/supplement_figure_timeseries_absolute-vpd12-range_1981_2020.svg", 
        width=22,
        height=8,
        units='cm',

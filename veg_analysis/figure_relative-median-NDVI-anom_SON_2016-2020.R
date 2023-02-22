@@ -71,7 +71,7 @@ p_out <- merge(dat_ndvi,fm,by=c("x","y"))[year>=2016 & year<=2020] %>%
   geom_sf(data=oz_poly, 
           inherit.aes = F,
           color="grey40")+
-  geom_tile()+
+  geom_raster()+ # geom_tile
   geom_sf(data=zone, 
           inherit.aes = F, 
           lwd=0.5,
@@ -80,9 +80,9 @@ p_out <- merge(dat_ndvi,fm,by=c("x","y"))[year>=2016 & year<=2020] %>%
   geom_point(inherit.aes = F,
              data=. %>% filter(bs_burned==1) %>% sample_frac(0.1),
              aes(x,y), 
-             size=2,
-             shape="x",
-             col='#ff0000')+
+             size=1.5,
+             shape=18,
+             col='#fc4f05')+
   geom_sf(data=oz_poly,inherit.aes = F, 
           fill=NA)+
   scale_fill_continuous_c4a_div(palette='bam', 
@@ -103,21 +103,37 @@ p_out <- merge(dat_ndvi,fm,by=c("x","y"))[year>=2016 & year<=2020] %>%
   scale_x_continuous(breaks=c(135,140,145,150))+
   labs(x=NULL,
        y=NULL,
-       fill='Sept-Nov NDVI Relative Anomaly (%)      ')+
+       fill = "(SON)\nNDVI\nAnom. (%)") + 
+       # fill='SON NDVI Relative Anomaly (%)      ')+
   facet_wrap(~year,drop = T,nrow=1)+
   theme_linedraw()+
   theme_linedraw()+
   theme(panel.grid=element_blank(), 
-        legend.position = 'bottom', 
-        legend.key.width = unit(1.75,'cm'), 
-        legend.key.height = unit(0.15,'cm'), 
+        legend.position = 'right', 
+        legend.key.width = unit(0.2,'cm'), 
+        legend.key.height = unit(0.6,'cm'), 
+        legend.text = element_text(size=11),
+        legend.title = element_text(size=12),
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_blank(),
+        strip.text.x = element_blank(),
         strip.background = element_blank(),
         strip.text = element_text(color='black',face='bold',size=13))
+# p_out
 gc()
 ggsave(p_out,
-  filename="figures/figure_relative-median-ndvi-anom_SON_2016-2020.png", 
+  filename="figures/v2/figure_relative-median-ndvi-anom_SON_2016-2020.png", 
        width=22*(5/4),
-       height=8,
+       height=8*0.75,
        units='cm',
   device=grDevices::png,
+       dpi=350)
+ggsave(p_out,
+  filename="figures/v2/figure_relative-median-ndvi-anom_SON_2016-2020.svg", 
+       width=22*(5/4),
+       height=8*0.75,
+       units='cm',
+  # device=grDevices::svg,
        dpi=350)

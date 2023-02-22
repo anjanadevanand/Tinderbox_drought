@@ -101,12 +101,14 @@ p_out <- rel_anom %>%
   geom_sf(data=oz_poly, 
           inherit.aes = F,
           color="grey40")+
-  geom_tile()+
+  geom_raster()+
   geom_sf(data=zone, 
           inherit.aes = F, 
           lwd=0.5,
           color='black', 
           fill='transparent')+
+  geom_sf(data=oz_poly,inherit.aes = F, 
+          fill=NA)+
   coord_sf(expand = F, 
     crs=st_crs(4326))+
   scale_x_continuous(breaks=c(seq(135,152,by=4)))+
@@ -127,21 +129,41 @@ p_out <- rel_anom %>%
   #                      #          quantile(clim$vpd_anom,0.99)),
   #                  oob=scales::squish)+
   labs(x=NULL,y=NULL, 
-       fill="Annual Mean Relative 15:00 VPD Anomaly (%)     ")+
+       fill="(Annual)\n15:00 VPD\nAnom. (%)")+
   facet_grid(~year)+
   theme_linedraw()+
   theme(panel.grid=element_blank(), 
-        legend.position = 'bottom', 
-        legend.key.width = unit(1.75,'cm'), 
-        legend.key.height = unit(0.15,'cm'), 
+        legend.position = 'right',
+        # legend.direction = 'vertical',
+        # legend.justification = c(1,1),
+        legend.background = element_rect(fill='transparent'),
+        legend.spacing = unit(0.1,'cm'),
+        legend.key.width = unit(0.2,'cm'), 
+        legend.key.height = unit(0.6,'cm'), 
+        legend.text = element_text(size=11),
+        legend.title = element_text(size=12),
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_blank(),
+        # strip.text.x = element_blank(),
         strip.background = element_blank(),
         strip.text = element_text(color='black',face='bold',size=13))
+gc()
 ggsave(p_out, 
-  filename="figures/figure_spattemp_relative-vpd-anom_2016_2020.png", 
+  filename="figures/v2/figure_spattemp_relative-vpd-anom_2016_2020.png", 
        width=22*(1.25),
-       height=8,
+       height=8*0.8,
        units='cm',
   device=grDevices::png,
+       dpi=350, 
+  type='cairo-png')
+ggsave(p_out, 
+  filename="figures/v2/figure_spattemp_relative-vpd-anom_2016_2020.svg", 
+       width=22*(1.25),
+       height=8*0.8,
+       units='cm',
+  device=grDevices::svg,
        dpi=350)
 # END PLOT =================================================
 

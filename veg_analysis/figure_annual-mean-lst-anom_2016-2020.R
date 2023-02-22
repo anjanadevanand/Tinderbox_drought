@@ -49,7 +49,7 @@ dat <- dat[is.na(lst_u)==F]
 dat[,`:=`(idx = .GRP), by=.(x,y)]
 dat_anoms <- dat[,`:=`(lst_anom = lst-lst_u)]
 # anoms_max <- dat_anoms[dat_anoms[,(lst_anom==max(lst_anom)),by=.(x,y,year)]$V1]
-rel_anoms <- dat_anoms[,.(rel_lst_anom = 100*mean(lst_anom,na.rm = T)/lst_u, 
+lst_rel_anoms <- dat_anoms[,.(rel_lst_anom = 100*mean(lst_anom,na.rm = T)/lst_u, 
                           lst_anom = mean(lst_anom,na.rm=T)), 
                        by=.(x,y,year)]
 
@@ -62,7 +62,7 @@ oz_poly <- st_crop(oz_poly,
   zone_bb %>% 
                      st_bbox())
 
-p_out <- rel_anoms %>% 
+p_out <- lst_rel_anoms %>% 
   ggplot(data=., aes(x,y,fill=lst_anom))+
   geom_sf(data=oz_poly, 
           inherit.aes = F,
@@ -73,6 +73,8 @@ p_out <- rel_anoms %>%
           lwd=0.5,
           color='black', 
           fill='transparent')+
+  geom_sf(data=oz_poly,inherit.aes = F, 
+          fill=NA)+
   coord_sf(expand = F, 
     crs = st_crs(4326))+
   scale_x_continuous(breaks=c(seq(138,152,by=4)))+
@@ -93,21 +95,37 @@ p_out <- rel_anoms %>%
   #                      #          quantile(anoms_max$lst_anom,0.99)),
   #                  oob=scales::squish)+
   labs(x=NULL,y=NULL, 
-       fill="Annual Mean 13:30 Land Skin Temperature Anomaly (°C)         ")+
+       fill="(Annual)\n13:30 LST\nAnom. (°C)")+
+       # fill="Annual Mean \n13:30 LST\nAnom. (°C)")+
   facet_wrap(~year,nrow = 1)+
   theme_linedraw()+
   theme(panel.grid=element_blank(), 
-        legend.position = 'bottom', 
-        legend.key.width = unit(1.75,'cm'), 
-        legend.key.height = unit(0.15,'cm'), 
+        legend.position = 'right', 
+        legend.key.width = unit(0.2,'cm'), 
+        legend.key.height = unit(0.6,'cm'), 
+        legend.text = element_text(size=11),
+        legend.title = element_text(size=12),
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_blank(),
+        strip.text.x = element_blank(),
         strip.background = element_blank(),
         strip.text = element_text(color='black',face='bold',size=13))
+p_out
 ggsave(p_out, 
-  filename = "figures/figure_annual-mean-lst-anom_2016-2020.png", 
+  filename = "figures/v2/figure_annual-mean-lst-anom_2016-2020.png", 
        width=22*(5/4),
-       height=8,
+       height=8*0.75,
        units='cm',
        device=grDevices::png,
+       dpi=350)
+ggsave(p_out, 
+  filename = "figures/v2/figure_annual-mean-lst-anom_2016-2020.svg", 
+       width=22*(5/4),
+       height=8*0.75,
+       units='cm',
+       device=grDevices::svg,
        dpi=350)
 
 # END PLOT =================================================

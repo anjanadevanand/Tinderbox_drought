@@ -109,25 +109,43 @@ p_out <- rel_diff_son %>%
   scale_fill_distiller(type='div',direction = 1,
                        limits=c(-50,50), 
                        oob=scales::squish)+
+  geom_sf(data=oz_poly,inherit.aes = F, 
+          fill=NA)+
   coord_sf(expand=F,
            crs=4326)+
   scale_x_continuous(breaks=c(135,140,145,150))+
   labs(x=NULL,
        y=NULL,
-       fill='Sept-Nov Vegetation Optical Depth Relative Anomaly (%)      ')+
+       fill='(SON)\nVOD\nAnom. (%)')+
   
   facet_wrap(~year,drop = T,nrow=1)+
   theme_linedraw()+
   theme(panel.grid=element_blank(), 
-        legend.position = 'bottom', 
-        legend.key.width = unit(1.75,'cm'), 
-        legend.key.height = unit(0.15,'cm'), 
+        legend.position = 'right', 
+        legend.key.width = unit(0.2,'cm'), 
+        legend.key.height = unit(0.6,'cm'), 
+        legend.text = element_text(size=11),
+        legend.title = element_text(size=12),
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_blank(),
+        strip.text.x = element_blank(),
         strip.background = element_blank(),
         strip.text = element_text(color='black',face='bold',size=13))
+# p_out
 ggsave(p_out, 
-  filename = "figures/figure_relative-median-VOD-anom_SON_2016-2020.png", 
+  filename = "figures/v2/figure_relative-median-VOD-anom_SON_2016-2020.png", 
        width=22*(5/4),
-       height=8,
+       height=8*0.75,
        units='cm',
   device=grDevices::png,
        dpi=350)
+ggsave(p_out, 
+  filename = "figures/v2/figure_relative-median-VOD-anom_SON_2016-2020.svg", 
+       width=22*(5/4),
+       height=8*0.75,
+       units='cm',
+  device=grDevices::svg,
+       dpi=350)
+
