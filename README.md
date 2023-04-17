@@ -11,3 +11,5 @@ Please add the a line in this readme file about the code you commit along the li
 3. drought_metrics/plot_drought_focusReg_meanSPI.ipynb & drought_metrics/plot_drought_focusReg_meanSPEI.ipynb - used to create spatial plot of mean SPI-3 and SPEI-3
 
 4. water_cycle_analysis/precipitation_and_ET_monthly_plots.ipynb - used to plot monthly anomalies in precipitation and ET (first panel of Figure 2) & save the anomaly numbers in csv files
+
+5. soil_moisture_drought_impact_on_summer_temperature.py - used to plot difference map of soil drought impact on summer temperature 
