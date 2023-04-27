@@ -19,13 +19,15 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from convert_units import get_land_var_scale, get_land_var_range_diff
 from common_utils import *
 
-def plot_spatial_fwsoil_qle_qh_tmax_qair(land_20181201_path,land_20191201_path, land_clim_2018_path, land_clim_2019_path,
+def plot_spatial_fwsoil_qle_qh_tmax_qrate(land_20181201_path,land_20191201_path, land_clim_2018_path, land_clim_2019_path,
                                         wrf_path, shape_path = None, loc_lat=None, loc_lon=None, seconds=None, message=None):
 
     # ======================= Make plots ========================
+    # Three integers (nrows, ncols, index)
+
     fig, ax = plt.subplots(nrows=4, ncols=5, figsize=[16,10],sharex=True, sharey=True, squeeze=True,
                            subplot_kw={'projection': ccrs.PlateCarree()})
-    plt.subplots_adjust(wspace=-0.6, hspace=0.0) # left=0.15,right=0.95,top=0.85,bottom=0.05,
+    plt.subplots_adjust(wspace=-0.65, hspace=0.005) # left=0.15,right=0.95,top=0.85,bottom=0.05,
 
     plt.rcParams['text.usetex']     = False
     plt.rcParams['font.family']     = "sans-serif"
@@ -57,6 +59,8 @@ def plot_spatial_fwsoil_qle_qh_tmax_qair(land_20181201_path,land_20191201_path, 
     states= NaturalEarthFeature(category="cultural", scale="50m",
                                         facecolor="none",
                                         name="admin_1_states_provinces_shp")
+    # ocean = NaturalEarthFeature('cultural', 'ocean', scale='50m',
+    #                         edgecolor='none', facecolor="lightgray")
 
     # ======================= Set colormap =======================
     cmap_1     = plt.cm.seismic
@@ -116,12 +120,12 @@ def plot_spatial_fwsoil_qle_qh_tmax_qair(land_20181201_path,land_20191201_path, 
             land_1201_path = land_20191201_path
             land_clim_path = land_clim_2019_path
 
-        land_1201_files = [ land_1201_path+"LIS.CABLE."+str(year_s)+"12-"+str(year_s)+"12.d01.nc",
-                            land_1201_path+"LIS.CABLE."+str(year_s+1)+"01-"+str(year_s+1)+"01.d01.nc",
-                            land_1201_path+"LIS.CABLE."+str(year_s+1)+"02-"+str(year_s+1)+"02.d01.nc",]
-        land_clim_files = [ land_clim_path+"LIS.CABLE."+str(year_s)+"12-"+str(year_s)+"12.d01.nc",
-                            land_clim_path+"LIS.CABLE."+str(year_s+1)+"01-"+str(year_s+1)+"01.d01.nc",
-                            land_clim_path+"LIS.CABLE."+str(year_s+1)+"02-"+str(year_s+1)+"02.d01.nc",]
+        land_1201_files = [ land_1201_path+"LIS.CABLE."+str(year_s)+"12-"+str(year_s)+"12_select.d01.nc",
+                            land_1201_path+"LIS.CABLE."+str(year_s+1)+"01-"+str(year_s+1)+"01_select.d01.nc",
+                            land_1201_path+"LIS.CABLE."+str(year_s+1)+"02-"+str(year_s+1)+"02_select.d01.nc",]
+        land_clim_files = [ land_clim_path+"LIS.CABLE."+str(year_s)+"12-"+str(year_s)+"12_select.d01.nc",
+                            land_clim_path+"LIS.CABLE."+str(year_s+1)+"01-"+str(year_s+1)+"01_select.d01.nc",
+                            land_clim_path+"LIS.CABLE."+str(year_s+1)+"02-"+str(year_s+1)+"02_select.d01.nc",]
 
         time, Dec1_T    = read_var_multi_file(land_1201_files, "Tair_f_inst", loc_lat, loc_lon, "lat", "lon")
         time, Clim_T    = read_var_multi_file(land_clim_files, "Tair_f_inst", loc_lat, loc_lon, "lat", "lon")
@@ -168,7 +172,7 @@ def plot_spatial_fwsoil_qle_qh_tmax_qair(land_20181201_path,land_20191201_path, 
         qh_diff         = dec1_Qh-clim_Qh
 
         # "Qair":
-        q_diff          = dec1_Qair-clim_Qair
+        q_diff          = (dec1_Qair-clim_Qair)/clim_Qair*100.
 
 
         # ==================== Start to plot ====================
@@ -214,36 +218,36 @@ def plot_spatial_fwsoil_qle_qh_tmax_qair(land_20181201_path,land_20191201_path, 
                                   transform=ax[i,j].transAxes)
 
         # left - FWsoil
-        clevs1  = [-0.5,-0.4,-0.3,-0.2,-0.1,0.1,0.2,0.3,0.4,0.5] # -1,-0.9,-0.8,-0.7,-0.6, ,0.6,0.7,0.8,0.9,1
+        clevs1  = [-0.5,-0.4,-0.3,-0.2,-0.1,0.1,0.2,0.3,0.4,0.5] 
         plot1   = ax[i,0].contourf(lon, lat, fw_diff, levels=clevs1, transform=ccrs.PlateCarree(),cmap=cmap_2,extend='both') #
         cbar    = ax[i,0].text(0.02, 0.15, texts[cnt], transform=ax[i,0].transAxes, fontsize=14, verticalalignment='top', bbox=props)
-        ax[i,0].add_feature(OCEAN,edgecolor='none', facecolor="lightgray") # lightgray
+        ax[i,0].add_feature(OCEAN,edgecolor='none', facecolor="white") 
 
         # middle left - Qle
-        clevs2   = [ -100, -80, -60, -40, -20, -5, 5, 20, 40, 60, 80, 100] #-140, -120, , 120, 140
+        clevs2   = [ -100, -80, -60, -40, -20, -5, 5, 20, 40, 60, 80, 100] 
         plot2    = ax[i,1].contourf(lon, lat, qle_diff, levels=clevs2, transform=ccrs.PlateCarree(),cmap=cmap_2,extend='both') #
         ax[i,1].text(0.02, 0.15, texts[cnt+1], transform=ax[i,1].transAxes, fontsize=14, verticalalignment='top', bbox=props)
-        ax[i,1].add_feature(OCEAN,edgecolor='none', facecolor="lightgray")
+        ax[i,1].add_feature(OCEAN,edgecolor='none', facecolor="white")
 
         # middle - Qh
         clevs3  = [ -100, -80, -60, -40, -20, -5, 5, 20, 40, 60, 80, 100]
         # [ -140, -120, -100, -80, -60, -40, -20, -10]
         plot3   = ax[i,2].contourf(lon, lat, qh_diff, levels=clevs3, transform=ccrs.PlateCarree(),cmap=cmap_1,extend='both') #
         ax[i,2].text(0.02, 0.15, texts[cnt+2], transform=ax[i,2].transAxes, fontsize=14, verticalalignment='top', bbox=props)
-        ax[i,2].add_feature(OCEAN,edgecolor='none', facecolor="lightgray")
+        ax[i,2].add_feature(OCEAN,edgecolor='none', facecolor="white") 
 
         # middle right - Tmax
         tmax_diff= np.where(np.isnan(fw_diff), np.nan, tmax_diff)
         clevs4   = [-3.,-2.5,-2.,-1.5,-1.,-0.5, -0.25, 0.25, 0.5, 1., 1.5, 2., 2.5, 3.]
         plot4    = ax[i,3].contourf(lon, lat, tmax_diff, levels=clevs4, transform=ccrs.PlateCarree(),cmap=cmap_1,extend='both') #
         ax[i,3].text(0.02, 0.15, texts[cnt+3], transform=ax[i,3].transAxes, fontsize=14, verticalalignment='top', bbox=props)
-        ax[i,3].add_feature(OCEAN,edgecolor='none', facecolor="lightgray")
+        ax[i,3].add_feature(OCEAN,edgecolor='none', facecolor="white") 
 
-        # right - Qair
-        clevs5  = [-2,-1.75,-1.5,-1.25,-1.,-0.75,-0.5,-0.25,0.25,0.5,0.75,1,1.25,1.5,1.75,2.]
-        plot5   = ax[i,4].contourf(lon, lat, q_diff*1000., levels=clevs5, transform=ccrs.PlateCarree(),cmap=cmap_2,extend='both') #
+        # right - Qair rate
+        clevs5  = [-16,-14,-12,-10,-8,-6,-4,-2,2,4,6,8,10,12,14,16]
+        plot5   = ax[i,4].contourf(lon, lat, q_diff, levels=clevs5, transform=ccrs.PlateCarree(),cmap=cmap_2,extend='both') #
         ax[i,4].text(0.02, 0.15, texts[cnt+4], transform=ax[i,4].transAxes, fontsize=14, verticalalignment='top', bbox=props)
-        ax[i,4].add_feature(OCEAN,edgecolor='none', facecolor="lightgray")
+        ax[i,4].add_feature(OCEAN,edgecolor='none', facecolor="white") 
         clevs   = None
 
         if shape_path != None:
@@ -273,41 +277,41 @@ def plot_spatial_fwsoil_qle_qh_tmax_qair(land_20181201_path,land_20191201_path, 
 
             # left - Fwsoil
             cbar = plt.colorbar(plot1, ax=ax[:,0], ticklocation="right", pad=0.05, orientation="horizontal",
-                                aspect=20, shrink=0.4)
+                                aspect=20, shrink=0.32)
             color_label= "-"
             cbar.set_label(color_label, loc='center',size=14)
             cbar.ax.tick_params(labelsize=8, rotation=90)
 
             # middle left - Qle
             cbar = plt.colorbar(plot2, ax=ax[:,1], ticklocation="right", pad=0.05, orientation="horizontal",
-                                aspect=20, shrink=0.4)
+                                aspect=20, shrink=0.32)
             color_label= "W m$\mathregular{^{-2}}$"
             cbar.set_label(color_label, loc='center',size=14)
             cbar.ax.tick_params(labelsize=8, rotation=90)
-
+            
             # middle - Qh
             cbar = plt.colorbar(plot3, ax=ax[:,2], ticklocation="right", pad=0.05, orientation="horizontal",
-                                aspect=20, shrink=0.4)
+                                aspect=20, shrink=0.32)
             color_label= "W m$\mathregular{^{-2}}$"
             cbar.set_label(color_label, loc='center',size=14)
             cbar.ax.tick_params(labelsize=8, rotation=90)
 
             # middle right - Tmax
             cbar = plt.colorbar(plot4, ax=ax[:,3], ticklocation="right", pad=0.05, orientation="horizontal",
-                                aspect=20, shrink=0.4)
+                                aspect=20, shrink=0.32)
             color_label= "$\mathregular{^o}$C"
             cbar.set_label(color_label, loc='center',size=14)
             cbar.ax.tick_params(labelsize=8, rotation=90)
 
-            # right - q
+            # right - q rate
             cbar = plt.colorbar(plot5, ax=ax[:,4], ticklocation="right", pad=0.05, orientation="horizontal",
-                                aspect=20, shrink=0.4)
-            color_label= "g kg$\mathregular{^{-1}}$"
+                                aspect=20, shrink=0.32)
+            color_label= "%"
             cbar.set_label(color_label, loc='center',size=14)
             cbar.ax.tick_params(labelsize=8, rotation=90)
         cnt = cnt + 5
 
-    plt.savefig('./plots/spatial_map_fwsoil_Qle_Qh_Tmax_q_2018_2020_summer_HW_version2.pdf',dpi=300)
+    plt.savefig('./plots/spatial_map_fwsoil_Qle_Qh_Tmax_qrate_2018_2020_summer_HW_version2.pdf',dpi=300)
 
 if __name__ == "__main__":
 
@@ -345,4 +349,4 @@ if __name__ == "__main__":
     atmo_clim_2018_path = "/g/data/w97/mm3972/model/wrf/NUWRF/LISWRF_configs/Tinderbox_drght_HW/"+case_clim_2018+"/WRF_output/"
     atmo_clim_2019_path = "/g/data/w97/mm3972/model/wrf/NUWRF/LISWRF_configs/Tinderbox_drght_HW/"+case_clim_2019+"/WRF_output/"
 
-    plot_spatial_fwsoil_qle_qh_tmax_qair(land_20181201_path,land_20191201_path, land_clim_2018_path, land_clim_2019_path, wrf_path, shape_path, loc_lat=loc_lat, loc_lon=loc_lon)
+    plot_spatial_fwsoil_qle_qh_tmax_qrate(land_20181201_path,land_20191201_path, land_clim_2018_path, land_clim_2019_path, wrf_path, shape_path, loc_lat=loc_lat, loc_lon=loc_lon)
