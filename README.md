@@ -12,4 +12,6 @@ Please add the a line in this readme file about the code you commit along the li
 
 4. water_cycle_analysis/precipitation_and_ET_monthly_plots.ipynb - used to plot monthly anomalies in precipitation and ET (first panel of Figure 2) & save the anomaly numbers in csv files
 
-5. land_atmosphere_feedbacks/soil_moisture_drought_impact_on_summer_temperature.py - used to plot difference map of soil drought impact on summer temperature 
+5. land_atmosphere_feedbacks/soil_moisture_drought_impact_on_summer_temperature.py - used to plot difference map of soil drought impact on summer temperature
+
+6. synoptic_analysis/Fig8a_code.ncl - used to plot the differences in anomalous proportions of heavy rainfall shown in Fig 8A. 
