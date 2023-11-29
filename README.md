@@ -10,9 +10,11 @@ Repository to share code used for analyses of the 2017-19 Tinderbox Drought in s
 
 - water_cycle_analysis/*.ipynb - used to plot monthly/seasonal anomalies in water cycle variables & save the anomaly numbers in csv files
 
+- veg_analysis/*.R - code to analyse satelliet based vegetation datasets
+
 - land_atmosphere_feedbacks/soil_moisture_drought_impact_on_summer_temperature.py - used to plot difference map of soil drought impact on summer temperature
 
-- synoptic_analysis/Fig8a_code.ncl - used to plot the differences in anomalous proportions of heavy rainfall shown in Fig 8A. 
+- synoptic_analysis/Fig8a_code.ncl - used to plot the differences in anomalous proportions of heavy rainfall
 
 - drought_break_probability/
   - identify_gridlevel_drought_events.ipynb & drought_events_calc_smDeficit.ipynb: identify soil moisture droughts and calulate deficits
