@@ -21,4 +21,9 @@ Repository to share code used for analyses of the 2017-19 Tinderbox Drought in s
   - fit_logiReg_gridded_varyThresh_model4_sm_drought_parallel_tb.py : fit logistic regression models to estimate probability of exceedance of deficits
   - plot_drought_break_probability.ipynb : plot modelled drought breaking probability results
 
-- climate_change_analysis/Fig_4A_and_9_Devanand_etal.ipynb: code used to perform bootstrapping of observations, and analyses of climate change signal from CMIP6 data 
+- climate_change_analysis/Fig_4A_and_9_Devanand_etal.ipynb: code used to perform bootstrapping of observations, and analyses of climate change signal from CMIP6 data
+
+### Reference
+
+Devanand et al. (under revision) Australia’s Tinderbox Drought: an extreme natural event likely worsened by human-caused climate change. https://eartharxiv.org/repository/view/6165/ [Preprint]
+ 
